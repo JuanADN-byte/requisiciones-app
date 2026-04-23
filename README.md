@@ -1,10 +1,10 @@
-# 🧾 Sistema de Gestión de Requisiciones
+#  Sistema de Gestión de Requisiciones
 
 Aplicación web desarrollada para la gestión eficiente de requisiciones dentro de una organización. Permite administrar usuarios, equipos y solicitudes, optimizando los procesos internos mediante una interfaz sencilla y un backend estructurado.
 
 ---
 
-## 🚀 Tecnologías utilizadas
+##  Tecnologías utilizadas
 
 * **Backend:** Python + FastAPI
 * **Frontend:** HTML, CSS, JavaScript
@@ -14,7 +14,7 @@ Aplicación web desarrollada para la gestión eficiente de requisiciones dentro 
 
 ---
 
-## 📁 Estructura del proyecto
+##  Estructura del proyecto
 
 ```
 envia_requisiciones/
@@ -49,7 +49,7 @@ envia_requisiciones/
 
 ---
 
-## ⚙️ Instalación y ejecución
+##  Instalación y ejecución
 
 ### 1. Clonar el repositorio
 
@@ -96,7 +96,7 @@ uvicorn main:app --reload
 
 ---
 
-## 🔐 Seguridad
+##  Seguridad
 
 * Uso de variables de entorno para proteger credenciales
 * Implementación de funciones de seguridad en el backend
@@ -104,7 +104,7 @@ uvicorn main:app --reload
 
 ---
 
-## 📌 Funcionalidades principales
+##  Funcionalidades principales
 
 * Gestión de usuarios
 * Administración de equipos
@@ -113,19 +113,19 @@ uvicorn main:app --reload
 
 ---
 
-## 📈 Estado del proyecto
+##  Estado del proyecto
 
 🚧 En desarrollo — Se están implementando mejoras en autenticación, validaciones y experiencia de usuario.
 
 ---
 
-## 👨‍💻 Autor
+##  Autor
 
 Desarrollado por **David Neira**
 Estudiante de Ingeniería de Software
 
 ---
 
-## ⭐ Notas
+##  Notas
 
 Este proyecto forma parte de un portafolio personal con fines académicos y profesionales.
