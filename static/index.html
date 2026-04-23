@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <link rel="icon" href="static/favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Requisiciones - Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --navy: #1a2f4a;
+      --navy-light: #243d5e;
+      --navy-dark: #111e2e;
+      --amber: #f5a623;
+      --amber-dark: #d4891a;
+      --blue: #378add;
+      --text: #e8edf2;
+      --text-muted: #8a9bb0;
+      --border: rgba(255,255,255,0.08);
+      --input-bg: rgba(255,255,255,0.06);
+    }
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--navy-dark);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 50%, rgba(55,138,221,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 80% 20%, rgba(245,166,35,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .container { width: 100%; max-width: 420px; padding: 20px; position: relative; z-index: 1; }
+    .logo-area { text-align: center; margin-bottom: 32px; }
+    .logo-icon {
+      width: 52px; height: 52px; background: var(--amber);
+      border-radius: 14px; display: inline-flex; align-items: center;
+      justify-content: center; margin-bottom: 12px;
+    }
+    .logo-icon svg { width: 28px; height: 28px; }
+    .logo-title { font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+    .logo-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .card {
+      background: rgba(26,47,74,0.8);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(20px);
+    }
+    .tag {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      background: rgba(55,138,221,0.15);
+      color: var(--blue);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    .form-group { margin-bottom: 14px; }
+    label {
+      display: block; font-size: 12px; font-weight: 500;
+      color: var(--text-muted); margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    input {
+      width: 100%; padding: 11px 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 14px;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+    input::placeholder { color: var(--text-muted); }
+    input:focus { border-color: var(--blue); background: rgba(55,138,221,0.08); }
+    .btn-primary {
+      width: 100%; padding: 12px;
+      background: var(--amber); border: none; border-radius: 8px;
+      color: var(--navy-dark);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: background 0.2s, transform 0.1s; margin-top: 6px;
+    }
+    .btn-primary:hover { background: var(--amber-dark); }
+    .btn-primary:active { transform: scale(0.99); }
+    .divider {
+      display: flex; align-items: center; gap: 12px; margin: 24px 0 20px;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .divider span { font-size: 12px; color: var(--text-muted); }
+    .toggle-link {
+      display: block; text-align: center; font-size: 13px;
+      color: var(--amber); cursor: pointer; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .toggle-link:hover { color: var(--amber-dark); }
+    .registro-box {
+      display: none; margin-top: 20px; padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .registro-box .sub-title {
+      font-size: 13px; color: var(--text-muted); margin-bottom: 14px; font-weight: 500;
+    }
+    .mensaje {
+      font-size: 13px; text-align: center; margin-top: 14px;
+      padding: 8px 12px; border-radius: 6px; display: none;
+    }
+    .mensaje.error {
+      display: block;
+      background: rgba(231,76,60,0.12);
+      border: 1px solid rgba(231,76,60,0.25);
+      color: #e74c3c;
+    }
+    .mensaje.success {
+      display: block;
+      background: rgba(46,204,113,0.12);
+      border: 1px solid rgba(46,204,113,0.25);
+      color: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="container">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <svg viewBox="0 0 28 28" fill="none">
+          <rect x="3" y="10" width="22" height="14" rx="3" fill="#1a2f4a"/>
+          <rect x="7" y="4" width="14" height="9" rx="2" fill="#1a2f4a" opacity="0.7"/>
+          <rect x="10" y="14" width="8" height="3" rx="1" fill="#f5a623"/>
+        </svg>
+      </div>
+      <div class="logo-title">Envia Requisiciones</div>
+      <div class="logo-sub">Sistema de gestión de requisiciones</div>
+    </div>
+
+    <div class="card">
+      <span class="tag">ACCESO AL SISTEMA</span>
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" id="correo" placeholder="usuario@empresa.com" />
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="contraseña" placeholder="••••••••" />
+      </div>
+      <button class="btn-primary" onclick="login()">Iniciar sesión</button>
+
+      <div class="divider"><span>¿Empresa nueva?</span></div>
+      <span class="toggle-link" onclick="toggleRegistro()">Crear cuenta</span>
+
+      <div class="registro-box" id="registro-box">
+        <div class="sub-title">Registrar nueva empresa</div>
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="nombre_reg" placeholder="Tu nombre completo" />
+        </div>
+        <div class="form-group">
+          <label>Correo</label>
+          <input type="email" id="correo_reg" placeholder="admin@empresa.com" />
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="contraseña_reg" placeholder="••••••••" />
+        </div>
+        <div class="form-group">
+          <label>Nombre de la empresa</label>
+          <input type="text" id="empresa" placeholder="Mi Empresa S.A." />
+        </div>
+        <button class="btn-primary" onclick="registro()">Registrarse</button>
+      </div>
+
+      <p id="mensaje" class="mensaje"></p>
+    </div>
+  </div>
+
+<script>
+  const API = "https://excavate-pushover-stool.ngrok-free.dev/api";
+
+  async function login() {
+    const correo = document.getElementById("correo").value;
+    const password = document.getElementById("contraseña").value;
+    const msg = document.getElementById("mensaje");
+    const res = await fetch(`${API}/usuarios/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ correo, password })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem("token", data.access_token);
+      window.location.href = "/dashboard";
+    } else {
+      msg.textContent = data.detail || "Credenciales inválidas";
+      msg.className = "mensaje error";
+    }
+  }
+
+  async function registro() {
+    const nombre = document.getElementById("nombre_reg").value;
+    const correo = document.getElementById("correo_reg").value;
+    const password = document.getElementById("contraseña_reg").value;
+    const empresa = document.getElementById("empresa").value;
+    const msg = document.getElementById("mensaje");
+    const res = await fetch(`${API}/usuarios/registro`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre, correo, rol: "admin", password, empresa })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      msg.textContent = "Cuenta creada. Ya puedes iniciar sesión.";
+      msg.className = "mensaje success";
+      document.getElementById("registro-box").style.display = "none";
+    } else {
+      msg.textContent = data.detail || JSON.stringify(data);
+      msg.className = "mensaje error";
+    }
+  }
+
+  function toggleRegistro() {
+    const box = document.getElementById("registro-box");
+    box.style.display = box.style.display === "none" ? "block" : "none";
+  }
+
+  document.addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+</script>
+</body>
+</html>

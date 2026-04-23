@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <link rel="icon" href="static/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Requisiciones</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --navy: #1a2f4a;
+      --navy-light: #243d5e;
+      --navy-dark: #111e2e;
+      --amber: #f5a623;
+      --amber-dark: #d4891a;
+      --blue: #378add;
+      --blue-light: #e8f0fa;
+      --text: #e8edf2;
+      --text-muted: #8a9bb0;
+      --border: rgba(255,255,255,0.08);
+      --card-bg: rgba(255,255,255,0.04);
+      --input-bg: rgba(255,255,255,0.06);
+    }
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--navy-dark);
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    /* HEADER */
+    header {
+      background: var(--navy);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .logo-icon {
+      width: 34px; height: 34px; background: var(--amber);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 20px; height: 20px; }
+    .header-title { font-size: 15px; font-weight: 600; color: var(--text); }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    #titulo { font-size: 13px; color: var(--text-muted); }
+    #titulo strong { color: var(--text); }
+    .user-dot {
+      width: 32px; height: 32px; background: var(--amber);
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-size: 12px; font-weight: 600;
+      color: var(--navy-dark); cursor: default;
+    }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--amber); color: var(--amber); }
+
+    /* LAYOUT */
+    .page { padding: 24px; max-width: 1100px; margin: 0 auto; }
+
+    /* SECCIONES */
+    .seccion { display: none; }
+    .seccion.active { display: block; }
+
+    /* CARDS */
+    .card {
+      background: var(--navy);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* FORM ELEMENTS */
+    input, textarea, select {
+      width: 100%;
+      padding: 10px 13px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 13px;
+      margin-bottom: 10px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    input::placeholder, textarea::placeholder { color: var(--text-muted); }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--blue);
+      background: rgba(55,138,221,0.08);
+    }
+    select option { background: var(--navy); color: var(--text); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* BUTTONS */
+    button {
+      font-family: 'IBM Plex Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 10px 16px;
+      background: var(--amber);
+      border: none;
+      border-radius: 7px;
+      color: var(--navy-dark);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .btn-primary:hover { background: var(--amber-dark); }
+    .btn-secondary {
+      padding: 7px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    .btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+    .btn-danger {
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid rgba(231,76,60,0.3);
+      border-radius: 6px;
+      color: #e74c3c;
+      font-size: 12px;
+    }
+    .btn-danger:hover { background: rgba(231,76,60,0.1); }
+    .btn-warning {
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 6px;
+      color: var(--amber);
+      font-size: 12px;
+    }
+    .btn-warning:hover { background: rgba(245,166,35,0.1); }
+    .btn-modal {
+      width: 100%;
+      padding: 10px 16px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .btn-modal:hover { border-color: var(--amber); color: var(--amber); }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .badge-pending { background: rgba(245,166,35,0.15); color: var(--amber); }
+    .badge-process { background: rgba(55,138,221,0.15); color: var(--blue); }
+    .badge-done { background: rgba(46,204,113,0.15); color: #2ecc71; }
+    .badge-rejected { background: rgba(231,76,60,0.15); color: #e74c3c; }
+    .badge-approved { background: rgba(46,204,113,0.15); color: #2ecc71; }
+
+    /* REQUISICION CARD */
+    .req {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      transition: border-color 0.2s;
+    }
+    .req:hover { border-color: rgba(255,255,255,0.15); }
+    .req-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .req-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+    .req-meta { font-size: 12px; color: var(--text-muted); }
+    .req-meta span { color: var(--text); }
+    .req-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+
+    /* FILTROS */
+    .filtros {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .filtros input, .filtros select {
+      margin-bottom: 0;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    /* TWO COL */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    /* DIVIDER */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    .modal-box {
+      background: var(--navy);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      width: 560px;
+      max-width: 90%;
+      max-height: 75vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 18px;
+      background: none; border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    /* USER ROW */
+    .user-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .user-row:last-child { border-bottom: none; }
+    .user-info { font-size: 13px; }
+    .user-name { font-weight: 500; color: var(--text); }
+    .user-email { color: var(--text-muted); font-size: 12px; }
+    .user-role {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      background: rgba(55,138,221,0.15);
+      color: var(--blue);
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-left: 6px;
+    }
+
+    /* ESTADO SELECT */
+    .estado-select {
+      width: auto;
+      padding: 5px 8px;
+      font-size: 12px;
+      margin-bottom: 0;
+    }
+
+    /* PASSWORD SECTION */
+    .pass-section { margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <div class="logo-icon">
+        <svg viewBox="0 0 20 20" fill="none">
+          <rect x="2" y="8" width="16" height="10" rx="2.5" fill="#1a2f4a"/>
+          <rect x="5" y="3" width="10" height="7" rx="1.5" fill="#1a2f4a" opacity="0.7"/>
+          <rect x="7" y="11" width="6" height="2.5" rx="0.75" fill="#f5a623"/>
+        </svg>
+      </div>
+      <span class="header-title">Envia Requisiciones</span>
+    </div>
+    <div class="header-right">
+      <span id="titulo">Cargando...</span>
+      <div class="user-dot" id="user-initials">--</div>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="page">
+
+    <!-- SECCIÓN SOLICITANTE -->
+    <div id="solicitante" class="seccion">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Nueva requisición</div>
+          <select class="tipo_equipo">
+            <option value="">-- Tipo de equipo --</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Impresora">Impresora</option>
+            <option value="Monitor">Monitor</option>
+            <option value="Teclado">Teclado</option>
+            <option value="Mouse">Mouse</option>
+            <option value="Servidor">Servidor</option>
+          </select>
+          <textarea class="problema_descripcion" placeholder="Describe el problema..."></textarea>
+          <button class="btn-primary" onclick="crearRequisicion(event)">Crear requisición</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Cambiar contraseña</div>
+          <input type="password" id="password_actual" placeholder="Contraseña actual" />
+          <input type="password" id="password_nueva" placeholder="Nueva contraseña" />
+          <button class="btn-primary" onclick="cambiarMiPassword()">Actualizar contraseña</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Mis requisiciones</div>
+        <div id="lista-mis-requisiciones"><p style="color:var(--text-muted);font-size:13px;">Cargando...</p></div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN TECNICO -->
+    <div id="tecnico" class="seccion">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Nueva requisición</div>
+          <select class="tipo_equipo">
+            <option value="">-- Tipo de equipo --</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Impresora">Impresora</option>
+            <option value="Monitor">Monitor</option>
+            <option value="Teclado">Teclado</option>
+            <option value="Mouse">Mouse</option>
+            <option value="Servidor">Servidor</option>
+          </select>
+          <textarea class="problema_descripcion" placeholder="Describe el problema..."></textarea>
+          <button class="btn-primary" onclick="crearRequisicion(event)">Crear requisición</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Cambiar contraseña</div>
+          <input type="password" id="password_actual" placeholder="Contraseña actual" />
+          <input type="password" id="password_nueva" placeholder="Nueva contraseña" />
+          <button class="btn-primary" onclick="cambiarMiPassword()">Actualizar contraseña</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Requisiciones asignadas</div>
+        <div class="filtros">
+          <input type="text" class="filtro-texto" placeholder="Buscar por solicitante o descripción..." oninput="aplicarFiltros()" />
+          <select class="filtro-estado" onchange="aplicarFiltros()">
+            <option value="">-- Estado --</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="en_proceso">En proceso</option>
+            <option value="completada">Completada</option>
+          </select>
+          <select class="filtro-equipo" onchange="aplicarFiltros()">
+            <option value="">-- Equipo --</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Impresora">Impresora</option>
+            <option value="Monitor">Monitor</option>
+            <option value="Teclado">Teclado</option>
+            <option value="Mouse">Mouse</option>
+            <option value="Servidor">Servidor</option>
+          </select>
+        </div>
+        <div id="lista-tecnico"><p style="color:var(--text-muted);font-size:13px;">Cargando...</p></div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN SUPERVISOR -->
+    <div id="supervisor" class="seccion">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Nueva requisición</div>
+          <select class="tipo_equipo">
+            <option value="">-- Tipo de equipo --</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Impresora">Impresora</option>
+            <option value="Monitor">Monitor</option>
+            <option value="Teclado">Teclado</option>
+            <option value="Mouse">Mouse</option>
+            <option value="Servidor">Servidor</option>
+          </select>
+          <textarea class="problema_descripcion" placeholder="Describe el problema..."></textarea>
+          <button class="btn-primary" onclick="crearRequisicion(event)">Crear requisición</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Cambiar contraseña</div>
+          <input type="password" id="password_actual" placeholder="Contraseña actual" />
+          <input type="password" id="password_nueva" placeholder="Nueva contraseña" />
+          <button class="btn-primary" onclick="cambiarMiPassword()">Actualizar contraseña</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Requisiciones para revisar</div>
+        <div class="filtros">
+          <input type="text" class="filtro-texto" placeholder="Buscar por solicitante o descripción..." oninput="aplicarFiltros()" />
+          <select class="filtro-estado" onchange="aplicarFiltros()">
+            <option value="">-- Estado --</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="en_proceso">En proceso</option>
+            <option value="completada">Completada</option>
+          </select>
+          <select class="filtro-equipo" onchange="aplicarFiltros()">
+            <option value="">-- Equipo --</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Impresora">Impresora</option>
+            <option value="Monitor">Monitor</option>
+            <option value="Teclado">Teclado</option>
+            <option value="Mouse">Mouse</option>
+            <option value="Servidor">Servidor</option>
+          </select>
+        </div>
+        <div id="lista-supervisor"><p style="color:var(--text-muted);font-size:13px;">Cargando...</p></div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN ADMIN -->
+    <div id="admin" class="seccion">
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">Crear nuevo usuario</div>
+          <input type="text" id="nombre" placeholder="Nombre completo" />
+          <input type="email" id="correo_admin" placeholder="Correo electrónico" />
+          <select id="rol">
+            <option value="">-- Selecciona un rol --</option>
+            <option value="solicitante">Solicitante</option>
+            <option value="tecnico">Técnico</option>
+            <option value="admin">Administrador</option>
+            <option value="supervisor">Supervisor</option>
+          </select>
+          <input type="password" id="contraseña_admin" placeholder="Contraseña" />
+          <button class="btn-primary" onclick="crearUsuario()">Crear usuario</button>
+          <button class="btn-modal" onclick="abrirModalUsuarios()">👥 Ver y gestionar usuarios</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Nueva requisición</div>
+          <select class="tipo_equipo">
+            <option value="">-- Tipo de equipo --</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Impresora">Impresora</option>
+            <option value="Monitor">Monitor</option>
+            <option value="Teclado">Teclado</option>
+            <option value="Mouse">Mouse</option>
+            <option value="Servidor">Servidor</option>
+          </select>
+          <textarea class="problema_descripcion" placeholder="Describe el problema..."></textarea>
+          <button class="btn-primary" onclick="crearRequisicion(event)">Crear requisición</button>
+          <hr class="divider">
+          <div class="card-title" style="border-bottom:none;margin-bottom:10px;padding-bottom:0;">Cambiar contraseña</div>
+          <input type="password" id="password_actual" placeholder="Contraseña actual" />
+          <input type="password" id="password_nueva" placeholder="Nueva contraseña" />
+          <button class="btn-primary" onclick="cambiarMiPassword()">Actualizar contraseña</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Todas las requisiciones</div>
+        <div class="filtros">
+          <input type="text" class="filtro-texto" placeholder="Buscar por solicitante o descripción..." oninput="aplicarFiltros()" />
+          <select class="filtro-estado" onchange="aplicarFiltros()">
+            <option value="">-- Estado --</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="en_proceso">En proceso</option>
+            <option value="completada">Completada</option>
+          </select>
+          <select class="filtro-equipo" onchange="aplicarFiltros()">
+            <option value="">-- Equipo --</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Desktop">Desktop</option>
+            <option value="Impresora">Impresora</option>
+            <option value="Monitor">Monitor</option>
+            <option value="Teclado">Teclado</option>
+            <option value="Mouse">Mouse</option>
+            <option value="Servidor">Servidor</option>
+          </select>
+        </div>
+        <div id="lista-admin"><p style="color:var(--text-muted);font-size:13px;">Cargando...</p></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL USUARIOS -->
+  <div id="modal-usuarios" class="modal-overlay">
+    <div class="modal-box">
+      <button class="modal-close" onclick="cerrarModalUsuarios()">✕</button>
+      <div class="modal-title">Usuarios de la empresa</div>
+      <div id="lista-usuarios"></div>
+    </div>
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
